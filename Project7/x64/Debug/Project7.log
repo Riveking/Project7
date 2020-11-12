@@ -1,0 +1,13 @@
+﻿  T_Graph.cpp
+  T_Engine.cpp
+d:\2020年下半年文件\游戏开发\实验7\project7\project7\t_engine.cpp(225): warning C4244: “return”: 从“LRESULT”转换到“LONG”，可能丢失数据
+d:\2020年下半年文件\游戏开发\实验7\project7\project7\t_engine.cpp(241): warning C4244: “return”: 从“LRESULT”转换到“LONG”，可能丢失数据
+  T_Display.cpp
+  EngineTest.cpp
+d:\2020年下半年文件\游戏开发\实验7\project7\project7\enginetest.cpp(83): warning C4244: “=”: 从“float”转换到“int”，可能丢失数据
+d:\2020年下半年文件\游戏开发\实验7\project7\project7\enginetest.cpp(92): warning C4244: “=”: 从“float”转换到“int”，可能丢失数据
+d:\2020年下半年文件\游戏开发\实验7\project7\project7\enginetest.cpp(101): warning C4244: “=”: 从“float”转换到“int”，可能丢失数据
+d:\2020年下半年文件\游戏开发\实验7\project7\project7\enginetest.cpp(110): warning C4244: “=”: 从“float”转换到“int”，可能丢失数据
+  正在生成代码...
+  Project7.vcxproj -> D:\2020年下半年文件\游戏开发\实验7\Project7\x64\Debug\Project7.exe
+  Project7.vcxproj -> D:\2020年下半年文件\游戏开发\实验7\Project7\x64\Debug\Project7.pdb (Full PDB)
