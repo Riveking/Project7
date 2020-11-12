@@ -2,6 +2,7 @@
 
 #include "T_Engine.h"
 #include "T_Graph.h"
+#include "T_Menu.h"
 #include "resource.h"
 
 struct FISH
@@ -36,7 +37,7 @@ public:
 private:
 	//记录游戏窗口宽高
 	int wnd_width, wnd_height;
-	
+	T_Menu t_menu;//游戏菜单类的对象
 	HBITMAP hBitmap;//保存已加载的位图的句柄
 	int bmpWidth, bmpHeight;//已加载位图的宽高
 	HBITMAP hbitmap;//当前位图句柄
