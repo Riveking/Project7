@@ -150,12 +150,14 @@
     <ClInclude Include="T_Display.h" />
     <ClInclude Include="T_Engine.h" />
     <ClInclude Include="T_Graph.h" />
+    <ClInclude Include="T_Menu.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EngineTest.cpp" />
     <ClCompile Include="T_Display.cpp" />
     <ClCompile Include="T_Engine.cpp" />
     <ClCompile Include="T_Graph.cpp" />
+    <ClCompile Include="T_Menu.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Project7.rc" />

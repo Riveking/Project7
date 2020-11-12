@@ -33,6 +33,9 @@
     <ClInclude Include="T_Graph.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="T_Menu.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="T_Display.cpp">
@@ -45,6 +48,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="T_Graph.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="T_Menu.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

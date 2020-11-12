@@ -334,5 +334,7 @@ void T_Menu::DestroyAll()
 	gm_menuItems.clear();
 	///使用swap,清除元素并回收内存
 	//清除容器并最小化它的容量
-	gm_menuItems.swap(vector<MENUITEM>()) ;
+	//gm_menuItems.swap(vector<MENUITEM>()) ;
+	vector<MENUITEM> emptyVec;
+	gm_menuItems.swap(emptyVec);
 }
