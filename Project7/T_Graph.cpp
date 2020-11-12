@@ -10,6 +10,7 @@
 #include "T_Graph.h"
 #include "T_Config.h"
 
+
 // T_Graph类默认构造函数
 //
 T_Graph::T_Graph()
@@ -413,4 +414,43 @@ void T_Graph::PaintBlank(HBITMAP hbmp, int width, int height, COLORREF crColor)
 	OldBmp = NULL;
 	// 删除笔刷
 	DeleteObject(hBrush);
+}
+
+bool T_Graph::LoadPngResource(HINSTANCE hInst, UINT nID, Bitmap *&pImg)
+{
+	HRSRC hRsrc = FindResource(hInst, MAKEINTRESOURCE(nID), L"PNG");
+	if (!hRsrc) return FALSE;
+	//load resource into memory
+	DWORD len = SizeofResource(hInst, hRsrc);
+	BYTE* lpRsrc = (BYTE*)LoadResource(hInst, hRsrc);
+	if (!lpRsrc) return FALSE;
+	//Allocate global memory on which to create stream
+	HGLOBAL m_hMem = GlobalAlloc(GMEM_FIXED, len);
+	BYTE* pmem = (BYTE*)GlobalLock(m_hMem);
+	memcpy(pmem, lpRsrc, len);
+	GlobalUnlock(m_hMem);
+	IStream* pstm;
+	CreateStreamOnHGlobal(m_hMem, FALSE, &pstm);
+	//load from stream
+	pImg = Gdiplus::Bitmap::FromStream(pstm);
+	pstm->Release();
+	FreeResource(lpRsrc);
+	GlobalFree(m_hMem);
+	return TRUE;
+}
+
+bool T_Graph::LoadPngImageRes(HINSTANCE hInst, UINT pngResID)
+{
+	Bitmap* pBmp = NULL;
+	LoadPngResource(hInst, pngResID, pBmp);
+	Status status = pBmp->GetHBITMAP(NULL, &hBmp);
+	if (status != S_OK)
+	{
+		hBmp = NULL;
+		return false;
+	}
+	ImageWidth = pBmp->GetWidth();
+	ImageHeight = pBmp->GetHeight();
+	delete pBmp;
+	return true;
 }

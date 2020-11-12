@@ -9,6 +9,7 @@
 
 #pragma once
 #include "T_Config.h"
+#include <WinUser.h>
 
 
 class T_Graph
@@ -29,12 +30,16 @@ public:
 	
 public:
 	// 加载图像(支持BMP, GIF, JPEG, PNG, TIFF等格式)
-	bool LoadImageFile(LPCTSTR path);				
+	bool LoadImageFile(LPCTSTR path);		
+	/*11.12新增*/
+	bool LoadPngResource(HINSTANCE hInst, UINT nID, Bitmap *&pImg);
+	bool LoadPngImageRes(HINSTANCE hInst, UINT pngResID);
 
 	void PaintImage(HDC hdc, int x, int y);
 	void PaintImage(HDC hdc, int x, int y, int width, int height);
 	void PaintImage(HDC hdc, int x, int y, int width, int height, BYTE alpha);
 	
+
 	void Destroy();	// 释放资源
 public:
 	static HBITMAP CreateBlankBitmap(int width, int height, COLORREF color);
