@@ -191,7 +191,7 @@ void EngineTest::GameMouseAction(int x,int y,int Action)
 				{
 				case 0://添加新游戏代码
 					PaintMyFish();
-					
+					t_menu.DestroyAll();
 					break;
 				case 1://添加关于代码
 					break;
