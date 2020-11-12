@@ -33,6 +33,12 @@ public:
 	void GameKeyAction(int Action = KEY_SYS_NONE);//按键行为处理
 	void GameMouseAction(int x, int y, int Action);//鼠标行为处理
 
+	/*实验七*/
+	void IntMyFish(HDC hdc);//初始化我的鱼
+	void PaintMyFish();//画我的鱼
+	void LogicMyFish();//逻辑化我的鱼
+	void PaintMyText(HDC hdc);//画我的字
+
 
 private:
 	//记录游戏窗口宽高
