@@ -108,6 +108,8 @@ void EngineTest::GameKeyAction(int Action)//游戏按键处理
 				IntMyMenu2();
 				break;
 			case 2://添加帮助代码
+				t_menu.DestroyAll();
+				IntMyMenu3();
 				break;
 			case 3:
 				SendMessage(m_hWnd, WM_SYSCOMMAND, SC_CLOSE, 0);
@@ -140,7 +142,8 @@ void EngineTest::GameMouseAction(int x,int y,int Action)
 					IntMyMenu2();
 					break;
 				case 2://添加帮助代码
-
+					t_menu.DestroyAll();
+					IntMyMenu3();
 					break;
 				case 3:
 					SendMessage(m_hWnd, WM_SYSCOMMAND, SC_CLOSE, 0);
@@ -345,8 +348,8 @@ void EngineTest::IntMyMenu2()
 	int x = 0, y = 0;
 	int btn_width = 0, btn_height = 0;
 	Color normalClr, focusClr;
-	wstring menuItems[] = { L"新游戏",L"返回",L"退出" };
-	t_menu.SetMenuBkg(L".\\res\\menubkg.jpg");
+	wstring menuItems[] = { L"新游戏",L"关于",L"帮助",L"退出" };
+	t_menu.SetMenuBkg(L".\\res\\beach.jpg");
 	//长条形的按钮菜单项
 	btn_width = 250;
 	btn_height = 70;
@@ -365,11 +368,51 @@ void EngineTest::IntMyMenu2()
 	menuInfo.focusTextColor = focusClr;
 	t_menu.SetMenuInfo(menuInfo);
 
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < 4; i++)
 	{
 		//垂直居中布局的坐标
 		x = (wndWidth - btn_width) / 2;
-		y = i*(btn_height + MENU_SPACE) + (wnd_height - 3 * btn_height - 2 * MENU_SPACE) / 2;
+		y = i*(btn_height + MENU_SPACE) + (wnd_height - 4 * btn_height - 3 * MENU_SPACE) / 2;
+
+		MENUITEM mItem;
+		mItem.pos.x = x;//当前菜单项xy坐标
+		mItem.pos.y = y;
+		mItem.ItemName = menuItems[i];
+		t_menu.AddMenuItem(mItem);
+	}
+}
+
+void EngineTest::IntMyMenu3()
+{
+	/*关于菜单*/
+	int x = 0, y = 0;
+	int btn_width = 0, btn_height = 0;
+	Color normalClr, focusClr;
+	wstring menuItems[] = { L"新游戏",L"关于",L"帮助",L"退出" };
+	t_menu.SetMenuBkg(L".\\res\\stage.jpg");
+	//长条形的按钮菜单项
+	btn_width = 250;
+	btn_height = 70;
+	normalClr = Color::Red;
+	focusClr = Color::White;
+	t_menu.SetBtnBmp(L".\\res\\button.png", btn_width, btn_height);
+	//设置菜单信息
+	MENU_INFO menuInfo;
+	menuInfo.align = 1;//居中对齐
+	menuInfo.space = MENU_SPACE;//菜单项之间的间隔距离
+	menuInfo.width = btn_width;//菜单项宽高
+	menuInfo.height = btn_height;
+	menuInfo.fontName = L"黑体";
+	menuInfo.isBold = true;
+	menuInfo.normalTextColor = normalClr;
+	menuInfo.focusTextColor = focusClr;
+	t_menu.SetMenuInfo(menuInfo);
+
+	for (int i = 0; i < 4; i++)
+	{
+		//垂直居中布局的坐标
+		x = (wndWidth - btn_width) / 2;
+		y = i*(btn_height + MENU_SPACE) + (wnd_height - 4 * btn_height - 3 * MENU_SPACE) / 2;
 
 		MENUITEM mItem;
 		mItem.pos.x = x;//当前菜单项xy坐标
