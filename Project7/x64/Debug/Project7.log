@@ -1,2 +1,7 @@
-﻿  Project7.vcxproj -> D:\2020年下半年文件\游戏开发\实验7\Project7\x64\Debug\Project7.exe
+﻿  EngineTest.cpp
+d:\2020年下半年文件\游戏开发\实验7\project7\project7\enginetest.cpp(266): warning C4244: “=”: 从“float”转换到“int”，可能丢失数据
+d:\2020年下半年文件\游戏开发\实验7\project7\project7\enginetest.cpp(275): warning C4244: “=”: 从“float”转换到“int”，可能丢失数据
+d:\2020年下半年文件\游戏开发\实验7\project7\project7\enginetest.cpp(284): warning C4244: “=”: 从“float”转换到“int”，可能丢失数据
+d:\2020年下半年文件\游戏开发\实验7\project7\project7\enginetest.cpp(293): warning C4244: “=”: 从“float”转换到“int”，可能丢失数据
+  Project7.vcxproj -> D:\2020年下半年文件\游戏开发\实验7\Project7\x64\Debug\Project7.exe
   Project7.vcxproj -> D:\2020年下半年文件\游戏开发\实验7\Project7\x64\Debug\Project7.pdb (Full PDB)

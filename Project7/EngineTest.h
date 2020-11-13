@@ -44,6 +44,14 @@ public:
 
 	void DrawMyMenu(HDC hdc);//画我的菜单
 
+	void SetMyAbout();//设置为关于状态
+	void SetMyHelp();//设置为帮助状态
+	void SetMyFish();//设置为帮助状态
+	void SetMyReset();//设置为初始状态
+	
+	void PaintMyAbout(HDC hdc);//画我的关于文字
+	void PaintMyHelp(HDC hdc);//画我的帮助文字
+
 
 
 private:
@@ -68,6 +76,7 @@ private:
 	static int FISH_HEIGHT;
 
 	static int MYCHOOSEMENU;//记录我菜单的选择
+	static int IsPaintAbout, IsPaintHelp, IsPaintFish;//是否该画关于、帮助了、画鱼了
 
 	vector<FISH> vecFish;
 

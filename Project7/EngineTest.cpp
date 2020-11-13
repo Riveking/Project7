@@ -8,6 +8,9 @@ int EngineTest::NUM = 10;
 int EngineTest::FISH_WIDTH = 143;
 int EngineTest::FISH_HEIGHT = 84;
 int EngineTest::MYCHOOSEMENU = 1;
+int EngineTest::IsPaintAbout = 0;
+int EngineTest::IsPaintHelp = 0;
+int EngineTest::IsPaintFish = 0;
 
 
 //WinMain函数
@@ -56,10 +59,10 @@ void EngineTest::GamePaint(HDC hdc)	//游戏显示	参数值为GameState
 	DrawMyMenu(hdc);
 
 	/*实验六部分*/
-	seaFloor.PaintImage(hdc, 0, 0, wnd_width, wnd_height, 255);
-	seaBed.PaintImage(hdc, 0, 0, wnd_width, wnd_height, 120);
+	//seaFloor.PaintImage(hdc, 0, 0, wnd_width, wnd_height, 255);
+	//seaBed.PaintImage(hdc, 0, 0, wnd_width, wnd_height, 120);
 	PrintMyFish(hdc);
-	PaintMyText(hdc);
+	
 
 }
 
@@ -106,6 +109,7 @@ void EngineTest::GameKeyAction(int Action)//游戏按键处理
 			case 1://添加关于代码
 				t_menu.DestroyAll();
 				IntMyMenu2();
+				
 				break;
 			case 2://添加帮助代码
 				t_menu.DestroyAll();
@@ -135,14 +139,19 @@ void EngineTest::GameMouseAction(int x,int y,int Action)
 				{
 				case 0://添加新游戏代码
 					t_menu.DestroyAll();
+					//EngineTest::IsPaintText = 1;
+					SetMyFish();
 					IntMyFish();
+
 					break;
 				case 1://添加关于代码
 					t_menu.DestroyAll();
+					SetMyAbout();
 					IntMyMenu2();
 					break;
 				case 2://添加帮助代码
 					t_menu.DestroyAll();
+					SetMyHelp();
 					IntMyMenu3();
 					break;
 				case 3:
@@ -183,6 +192,7 @@ void EngineTest::IntMyFish()
 
 void EngineTest::PaintMyText(HDC hdc)
 {
+	if(EngineTest::IsPaintFish==1){
 	RectF captionRec;
 	captionRec.X = 0.00;
 	captionRec.Y = 0.00;
@@ -197,35 +207,41 @@ void EngineTest::PaintMyText(HDC hdc)
 	infoRec.Height = 60;
 	LPCTSTR info = L"班级：软工1809班 学号8002118239 姓名：李文齐 时间：2020年11月12日";
 	T_Graph::PaintText(hdc, infoRec, info, 14, L"宋体", Color::White, FontStyleBold, StringAlignmentCenter);
+	}
 }
 
-void EngineTest::PrintMyFish(HDC hdc)
+void EngineTest::PrintMyFish(HDC hdc)//画鱼和背景
 {
-	vector<FISH>::iterator it;
-	for (it = vecFish.begin(); it < vecFish.end(); it++)
-	{
-		int rot = 0;
-		int dir = it->dir;
-
-		if (dir == 0)
+	if (EngineTest::IsPaintFish == 1) {
+		seaFloor.PaintImage(hdc, 0, 0, wnd_width, wnd_height, 255);
+		seaBed.PaintImage(hdc, 0, 0, wnd_width, wnd_height, 120);
+		PaintMyText(hdc);
+		vector<FISH>::iterator it;
+		for (it = vecFish.begin(); it < vecFish.end(); it++)
 		{
-			rot = 0;//0朝左
+			int rot = 0;
+			int dir = it->dir;
+
+			if (dir == 0)
+			{
+				rot = 0;//0朝左
+			}
+			else if (dir == 1)
+			{
+				rot = TRANS_HFLIP_NOROT;
+			}
+			RectF msgRect;
+			msgRect.Width = (REAL)(msgFrame.GetImageWidth());
+			msgRect.Height = (REAL)(msgFrame.GetImageHeight());
+			msgRect.X = (REAL)(it->x + (it->ratio*FISH_WIDTH - msgFrame.GetImageWidth()) / 2);
+			msgRect.Y = (REAL)(it->y - msgFrame.GetImageHeight());
+			msgFrame.PaintImage(hdc, (int)msgRect.X, (int)msgRect.Y, (int)msgRect.Width, (int)msgRect.Height, 255);
+
+			T_Graph::PaintText(hdc, msgRect, it->name, 10, L"Arial", Color::White, FontStyleBold, StringAlignmentCenter);
+
+
+			it->fish.PaintFrame(it->fish.GetBmpHandle(), hdc, it->x, it->y, it->fcount, 20, FISH_WIDTH, FISH_HEIGHT, it->ratio, rot);
 		}
-		else if (dir == 1)
-		{
-			rot = TRANS_HFLIP_NOROT;
-		}
-		RectF msgRect;
-		msgRect.Width = (REAL)(msgFrame.GetImageWidth());
-		msgRect.Height = (REAL)(msgFrame.GetImageHeight());
-		msgRect.X = (REAL)(it->x + (it->ratio*FISH_WIDTH - msgFrame.GetImageWidth()) / 2);
-		msgRect.Y = (REAL)(it->y - msgFrame.GetImageHeight());
-		msgFrame.PaintImage(hdc, (int)msgRect.X, (int)msgRect.Y, (int)msgRect.Width, (int)msgRect.Height, 255);
-
-		T_Graph::PaintText(hdc, msgRect, it->name, 10, L"Arial", Color::White, FontStyleBold, StringAlignmentCenter);
-
-
-		it->fish.PaintFrame(it->fish.GetBmpHandle(), hdc, it->x, it->y, it->fcount, 20, FISH_WIDTH, FISH_HEIGHT, it->ratio, rot);
 	}
 }
 
@@ -433,8 +449,68 @@ void EngineTest::DrawMyMenu(HDC hdc)
 		textRec.Y = 0.00;
 		textRec.Width = (float)wnd_width;
 		textRec.Height = (float)wnd_height / 4;
-		T_Graph::PaintText(hdc, textRec, L"游戏菜单", 36, L"黑体", Color::White, FontStyleBold, StringAlignmentCenter);
+		if (EngineTest::IsPaintAbout == 1)
+		{
+			T_Graph::PaintText(hdc, textRec, L"关于菜单", 36, L"黑体", Color::White, FontStyleBold, StringAlignmentCenter);
+		}
+		else if (EngineTest::IsPaintHelp == 1)
+		{
+			T_Graph::PaintText(hdc, textRec, L"帮助菜单", 36, L"黑体", Color::White, FontStyleBold, StringAlignmentCenter);
+		}
+		else {
+			T_Graph::PaintText(hdc, textRec, L"游戏菜单", 36, L"黑体", Color::White, FontStyleBold, StringAlignmentCenter);
+		}
+		
 
 	}
 }
 
+
+void EngineTest::PaintMyAbout(HDC hdc)
+{
+	if (EngineTest::IsPaintAbout == 1)
+	{
+		RectF captionRec;
+		captionRec.X = 0.00;
+		captionRec.Y = 0.00;
+		captionRec.Width = (float)wnd_width;
+		captionRec.Height = 60.0f;
+		LPCTSTR caption = L"李文齐的位图模块绘图实验";
+		T_Graph::PaintText(hdc, captionRec, caption, 22, L"微软雅黑", Color::White, FontStyleBold, StringAlignmentNear);
+		RectF infoRec;
+		infoRec.X = 0.00;
+		infoRec.Y = (REAL)(wnd_height - 60);
+		infoRec.Width = (float)wnd_width;
+		infoRec.Height = 60;
+		LPCTSTR info = L"班级：软工1809班 学号8002118239 姓名：李文齐 时间：2020年11月12日";
+		T_Graph::PaintText(hdc, infoRec, info, 14, L"宋体", Color::White, FontStyleBold, StringAlignmentCenter);
+	}
+}
+
+void EngineTest::SetMyAbout()
+{
+	EngineTest::IsPaintAbout = 1;
+	EngineTest::IsPaintFish = 0;
+	EngineTest::IsPaintHelp = 0;
+}
+
+void EngineTest::SetMyHelp()
+{
+	EngineTest::IsPaintAbout = 0;
+	EngineTest::IsPaintFish = 0;
+	EngineTest::IsPaintHelp = 1;
+}
+
+void EngineTest::SetMyFish()
+{
+	EngineTest::IsPaintAbout = 0;
+	EngineTest::IsPaintFish = 1;
+	EngineTest::IsPaintHelp = 0;
+}
+
+void EngineTest::SetMyReset()
+{
+	EngineTest::IsPaintAbout = 0;
+	EngineTest::IsPaintFish = 0;
+	EngineTest::IsPaintHelp = 0;
+}
