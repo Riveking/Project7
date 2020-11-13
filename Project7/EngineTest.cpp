@@ -104,21 +104,27 @@ void EngineTest::GameKeyAction(int Action)//游戏按键处理
 			{
 			case 0://添加新游戏代码
 				t_menu.DestroyAll();
+				//EngineTest::IsPaintText = 1;
+				SetMyFish();
 				IntMyFish();
+
 				break;
 			case 1://添加关于代码
 				t_menu.DestroyAll();
+				SetMyAbout();
 				IntMyMenu2();
-				
 				break;
 			case 2://添加帮助代码
 				t_menu.DestroyAll();
+				SetMyHelp();
 				IntMyMenu3();
 				break;
 			case 3:
+				SetMyReset();
 				SendMessage(m_hWnd, WM_SYSCOMMAND, SC_CLOSE, 0);
 				break;
 			}
+			t_menu.SetMenuIndex(-1);
 		}
 	}
 }
@@ -155,6 +161,7 @@ void EngineTest::GameMouseAction(int x,int y,int Action)
 					IntMyMenu3();
 					break;
 				case 3:
+					SetMyReset();
 					SendMessage(m_hWnd, WM_SYSCOMMAND, SC_CLOSE, 0);
 					break;
 				}
@@ -209,6 +216,8 @@ void EngineTest::PaintMyText(HDC hdc)
 	T_Graph::PaintText(hdc, infoRec, info, 14, L"宋体", Color::White, FontStyleBold, StringAlignmentCenter);
 	}
 }
+
+
 
 void EngineTest::PrintMyFish(HDC hdc)//画鱼和背景
 {
@@ -367,11 +376,11 @@ void EngineTest::IntMyMenu2()
 	wstring menuItems[] = { L"新游戏",L"关于",L"帮助",L"退出" };
 	t_menu.SetMenuBkg(L".\\res\\beach.jpg");
 	//长条形的按钮菜单项
-	btn_width = 250;
-	btn_height = 70;
-	normalClr = Color::Red;
-	focusClr = Color::White;
-	t_menu.SetBtnBmp(L".\\res\\button.png", btn_width, btn_height);
+	btn_width = 120;
+	btn_height = 120;
+	normalClr = Color::White;
+	focusClr = Color::Yellow;
+	t_menu.SetBtnBmp(L".\\res\\redroundbtn.png", btn_width, btn_height);// 菜单项图片
 	//设置菜单信息
 	MENU_INFO menuInfo;
 	menuInfo.align = 1;//居中对齐
@@ -387,8 +396,8 @@ void EngineTest::IntMyMenu2()
 	for (int i = 0; i < 4; i++)
 	{
 		//垂直居中布局的坐标
-		x = (wndWidth - btn_width) / 2;
-		y = i*(btn_height + MENU_SPACE) + (wnd_height - 4 * btn_height - 3 * MENU_SPACE) / 2;
+		x = i*(btn_width + MENU_SPACE) + (wndWidth - 4 * btn_width - 3 * MENU_SPACE) / 2;
+		y = wnd_height - 2 * btn_height;
 
 		MENUITEM mItem;
 		mItem.pos.x = x;//当前菜单项xy坐标
@@ -426,9 +435,10 @@ void EngineTest::IntMyMenu3()
 
 	for (int i = 0; i < 4; i++)
 	{
-		//垂直居中布局的坐标
-		x = (wndWidth - btn_width) / 2;
-		y = i*(btn_height + MENU_SPACE) + (wnd_height - 4 * btn_height - 3 * MENU_SPACE) / 2;
+		int col = i % 2;
+		int row = i / 2;
+		x = col*(btn_width + MENU_SPACE) + (wndWidth - 2 * btn_width - MENU_SPACE) / 2;
+		y = row*(btn_height + MENU_SPACE) + (wnd_height - 2 * btn_height - MENU_SPACE);
 
 		MENUITEM mItem;
 		mItem.pos.x = x;//当前菜单项xy坐标
@@ -451,11 +461,13 @@ void EngineTest::DrawMyMenu(HDC hdc)
 		textRec.Height = (float)wnd_height / 4;
 		if (EngineTest::IsPaintAbout == 1)
 		{
-			T_Graph::PaintText(hdc, textRec, L"关于菜单", 36, L"黑体", Color::White, FontStyleBold, StringAlignmentCenter);
+			T_Graph::PaintText(hdc, textRec, L"作者信息", 36, L"黑体", Color::White, FontStyleBold, StringAlignmentCenter);
+			PaintMyAbout(hdc);
 		}
 		else if (EngineTest::IsPaintHelp == 1)
 		{
-			T_Graph::PaintText(hdc, textRec, L"帮助菜单", 36, L"黑体", Color::White, FontStyleBold, StringAlignmentCenter);
+			T_Graph::PaintText(hdc, textRec, L"操作说明", 36, L"黑体", Color::White, FontStyleBold, StringAlignmentCenter);
+			PaintMyHelp(hdc);
 		}
 		else {
 			T_Graph::PaintText(hdc, textRec, L"游戏菜单", 36, L"黑体", Color::White, FontStyleBold, StringAlignmentCenter);
@@ -468,21 +480,42 @@ void EngineTest::DrawMyMenu(HDC hdc)
 
 void EngineTest::PaintMyAbout(HDC hdc)
 {
-	if (EngineTest::IsPaintAbout == 1)
+		if (EngineTest::IsPaintAbout == 1)
+		{
+			RectF captionRec;
+			captionRec.X = 0.00;
+			captionRec.Y = 0.00;
+			captionRec.Width = (float)wnd_width;
+			captionRec.Height = 60.0f;
+			LPCTSTR caption = L"关于";
+			T_Graph::PaintText(hdc, captionRec, caption, 22, L"微软雅黑", Color::White, FontStyleBold, StringAlignmentCenter);
+			RectF infoRec;
+			infoRec.X = 0.00;
+			infoRec.Y = (REAL)(wnd_height / 2 - 80);
+			infoRec.Width = (float)wnd_width;
+			infoRec.Height = 60;
+			LPCTSTR info = L"姓名：李文齐 时间：2020年11月12日\n 班级：软工1809班 学号8002118239";
+			T_Graph::PaintText(hdc, infoRec, info, 14, L"宋体", Color::White, FontStyleBold, StringAlignmentCenter);
+		}
+}
+
+void EngineTest::PaintMyHelp(HDC hdc)
+{
+	if (EngineTest::IsPaintHelp == 1)
 	{
 		RectF captionRec;
 		captionRec.X = 0.00;
 		captionRec.Y = 0.00;
 		captionRec.Width = (float)wnd_width;
 		captionRec.Height = 60.0f;
-		LPCTSTR caption = L"李文齐的位图模块绘图实验";
-		T_Graph::PaintText(hdc, captionRec, caption, 22, L"微软雅黑", Color::White, FontStyleBold, StringAlignmentNear);
+		LPCTSTR caption = L"帮助";
+		T_Graph::PaintText(hdc, captionRec, caption, 22, L"微软雅黑", Color::White, FontStyleBold, StringAlignmentCenter);
 		RectF infoRec;
 		infoRec.X = 0.00;
-		infoRec.Y = (REAL)(wnd_height - 60);
+		infoRec.Y = (REAL)(wnd_height / 2 - 80);
 		infoRec.Width = (float)wnd_width;
 		infoRec.Height = 60;
-		LPCTSTR info = L"班级：软工1809班 学号8002118239 姓名：李文齐 时间：2020年11月12日";
+		LPCTSTR info = L"通过上下左右方向键控制小鱼，\n躲避大鱼，吃掉小鱼";
 		T_Graph::PaintText(hdc, infoRec, info, 14, L"宋体", Color::White, FontStyleBold, StringAlignmentCenter);
 	}
 }
