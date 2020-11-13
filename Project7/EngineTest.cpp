@@ -7,6 +7,7 @@ float EngineTest::rand_size[5] = { 1.0f,0.9f,0.8f,0.7f,0.6f };
 int EngineTest::NUM = 10;
 int EngineTest::FISH_WIDTH = 143;
 int EngineTest::FISH_HEIGHT = 84;
+int EngineTest::MYCHOOSEMENU = 1;
 
 
 //WinMain函数
@@ -37,64 +38,10 @@ EngineTest::~EngineTest(void){}
 
 
 void EngineTest::GameInit(){
-	/*实验七代码*/
-	int x = 0, y = 0;
-	int btn_width = 0, btn_height = 0;
-	Color normalClr, focusClr;
-	wstring menuItems[] = { L"新游戏",L"关于",L"帮助",L"退出" };
-	t_menu.SetMenuBkg(L".\\res\\menubkg.jpg");
-	//长条形的按钮菜单项
-	btn_width = 250;
-	btn_height = 70;
-	normalClr = Color::Red;
-	focusClr = Color::White;
-	t_menu.SetBtnBmp(L".\\res\\button.png", btn_width, btn_height);
-	//设置菜单信息
-	MENU_INFO menuInfo;
-	menuInfo.align = 1;//居中对齐
-	menuInfo.space = MENU_SPACE;//菜单项之间的间隔距离
-	menuInfo.width = btn_width;//菜单项宽高
-	menuInfo.height = btn_height;
-	menuInfo.fontName = L"黑体";
-	menuInfo.isBold = true;
-	menuInfo.normalTextColor = normalClr;
-	menuInfo.focusTextColor = focusClr;
-	t_menu.SetMenuInfo(menuInfo);
 
-	for (int i = 0; i < 4; i++)
-	{
-		//垂直居中布局的坐标
-		x = (wndWidth - btn_width) / 2;
-		y = i*(btn_height + MENU_SPACE) + (wnd_height - 4 * btn_height - 3 * MENU_SPACE) / 2;
-		/*将x、y坐标修改如下，可以实现水平居中布局
-		x =i*(btn_ width+MENU_SPACE)+(wndWidth - 4*btn_width - 3*MENU_SPACE)/2;
-		y = wnd_height-2 *btn_height;
-		*/
-
-		/**将x、y坐标修改如下，可以实现双行双列布局
-			int col=i%2;
-			int row=i/2;
-			x =col*(btn_ width+MENU_SPACE)+(wndWidth - 2*btn_width - *MENU_SPACE)/2;
-			y = row*(btn_height+MENU_SPACE)+(wnd_height-2*btn_height-MENU_SPACE)/2;
-		*/
-		MENUITEM mItem;
-		mItem.pos.x = x;//当前菜单项xy坐标
-		mItem.pos.y = y;
-		mItem.ItemName = menuItems[i];
-		t_menu.AddMenuItem(mItem);
-
-		/*将按钮修改如下，可以改成圆形布局效果
-		btn_ width= 120;
-		btn_ height= 120;
-		normalClr = Color::White;
-		focusClr = Color:: Yellow;
-		t_menu.SetBtnBmp(L".\\res\\redroundbtn.png", btn_width, btn_height);// 菜单项图片
-		*/
-	}
+	IntMyMenu();
 	GameState = GAME_START;
 
-
-	
 }				//游戏初始化接口函数
 void EngineTest::GameLogic()
 {
@@ -106,22 +53,12 @@ void EngineTest::GameLogic()
 void EngineTest::GamePaint(HDC hdc)	//游戏显示	参数值为GameState
 {
 	/*实验七部分*/
-	if (GameState == GAME_START)
-	{
-		t_menu.DrawMenu(hdc);
-		RectF textRec;
-		textRec.X = 0.00;
-		textRec.Y = 0.00;
-		textRec.Width = (float)wnd_width;
-		textRec.Height = (float)wnd_height / 4;
-		T_Graph::PaintText(hdc, textRec, L"游戏菜单", 36, L"黑体", Color::White, FontStyleBold, StringAlignmentCenter);
-
-	}
+	DrawMyMenu(hdc);
 
 	/*实验六部分*/
 	seaFloor.PaintImage(hdc, 0, 0, wnd_width, wnd_height, 255);
 	seaBed.PaintImage(hdc, 0, 0, wnd_width, wnd_height, 120);
-	IntMyFish(hdc);
+	PrintMyFish(hdc);
 	PaintMyText(hdc);
 
 }
@@ -136,8 +73,10 @@ void EngineTest::GameEnd(){
 		it->fish.Destroy();
 	}
 }				//游戏结束处理
+
+
 void EngineTest::GameKeyAction(int Action)//游戏按键处理
-{
+{//更改，如果游戏是启动状态，可以监听键盘，如果是游玩状态，则t_menu不管
 	if (GetAsyncKeyState(VK_UP) < 0)
 	{
 		t_menu.MenuKeyDown(VK_UP);
@@ -156,14 +95,17 @@ void EngineTest::GameKeyAction(int Action)//游戏按键处理
 	}
 	if (GetAsyncKeyState(VK_RETURN) < 0)
 	{
-		if (t_menu.GetMenuIndex() >= 0)
+		if (t_menu.GetMenuIndex() >= 0)//进入游戏后index改成-1
 		{
 			switch (t_menu.GetMenuIndex())
 			{
 			case 0://添加新游戏代码
-				PaintMyFish();
+				t_menu.DestroyAll();
+				IntMyFish();
 				break;
 			case 1://添加关于代码
+				t_menu.DestroyAll();
+				IntMyMenu2();
 				break;
 			case 2://添加帮助代码
 				break;
@@ -190,12 +132,15 @@ void EngineTest::GameMouseAction(int x,int y,int Action)
 				switch (index)
 				{
 				case 0://添加新游戏代码
-					PaintMyFish();
 					t_menu.DestroyAll();
+					IntMyFish();
 					break;
 				case 1://添加关于代码
+					t_menu.DestroyAll();
+					IntMyMenu2();
 					break;
 				case 2://添加帮助代码
+
 					break;
 				case 3:
 					SendMessage(m_hWnd, WM_SYSCOMMAND, SC_CLOSE, 0);
@@ -206,7 +151,7 @@ void EngineTest::GameMouseAction(int x,int y,int Action)
 	}
 }
 
-void EngineTest::PaintMyFish()
+void EngineTest::IntMyFish()
 {
 	seaBed.LoadImageFile(L".\\res\\seabed.jpg");
 	seaFloor.LoadImageFile(L".\\res\\seafloor.jpg");
@@ -251,7 +196,7 @@ void EngineTest::PaintMyText(HDC hdc)
 	T_Graph::PaintText(hdc, infoRec, info, 14, L"宋体", Color::White, FontStyleBold, StringAlignmentCenter);
 }
 
-void EngineTest::IntMyFish(HDC hdc)
+void EngineTest::PrintMyFish(HDC hdc)
 {
 	vector<FISH>::iterator it;
 	for (it = vecFish.begin(); it < vecFish.end(); it++)
@@ -334,3 +279,119 @@ void EngineTest::LogicMyFish()
 		}
 	}
 }
+
+/*将x、y坐标修改如下，可以实现水平居中布局
+x =i*(btn_ width+MENU_SPACE)+(wndWidth - 4*btn_width - 3*MENU_SPACE)/2;
+y = wnd_height-2 *btn_height;
+*/
+
+/*将x、y坐标修改如下，可以实现双行双列布局
+int col=i%2;
+int row=i/2;
+x =col*(btn_ width+MENU_SPACE)+(wndWidth - 2*btn_width - *MENU_SPACE)/2;
+y = row*(btn_height+MENU_SPACE)+(wnd_height-2*btn_height-MENU_SPACE)/2;
+*/
+
+/*将按钮修改如下，可以改成圆形布局效果
+btn_ width= 120;
+btn_ height= 120;
+normalClr = Color::White;
+focusClr = Color:: Yellow;
+t_menu.SetBtnBmp(L".\\res\\redroundbtn.png", btn_width, btn_height);// 菜单项图片
+*/
+void EngineTest::IntMyMenu()
+{
+	/*实验七代码*/
+	int x = 0, y = 0;
+	int btn_width = 0, btn_height = 0;
+	Color normalClr, focusClr;
+	wstring menuItems[] = { L"新游戏",L"关于",L"帮助",L"退出" };
+	t_menu.SetMenuBkg(L".\\res\\menubkg.jpg");
+	//长条形的按钮菜单项
+	btn_width = 250;
+	btn_height = 70;
+	normalClr = Color::Red;
+	focusClr = Color::White;
+	t_menu.SetBtnBmp(L".\\res\\button.png", btn_width, btn_height);
+	//设置菜单信息
+	MENU_INFO menuInfo;
+	menuInfo.align = 1;//居中对齐
+	menuInfo.space = MENU_SPACE;//菜单项之间的间隔距离
+	menuInfo.width = btn_width;//菜单项宽高
+	menuInfo.height = btn_height;
+	menuInfo.fontName = L"黑体";
+	menuInfo.isBold = true;
+	menuInfo.normalTextColor = normalClr;
+	menuInfo.focusTextColor = focusClr;
+	t_menu.SetMenuInfo(menuInfo);
+
+	for (int i = 0; i < 4; i++)
+	{
+		//垂直居中布局的坐标
+		x = (wndWidth - btn_width) / 2;
+		y = i*(btn_height + MENU_SPACE) + (wnd_height - 4 * btn_height - 3 * MENU_SPACE) / 2;
+
+		MENUITEM mItem;
+		mItem.pos.x = x;//当前菜单项xy坐标
+		mItem.pos.y = y;
+		mItem.ItemName = menuItems[i];
+		t_menu.AddMenuItem(mItem);
+	}
+}
+
+void EngineTest::IntMyMenu2()
+{
+	/*关于菜单*/
+	int x = 0, y = 0;
+	int btn_width = 0, btn_height = 0;
+	Color normalClr, focusClr;
+	wstring menuItems[] = { L"新游戏",L"返回",L"退出" };
+	t_menu.SetMenuBkg(L".\\res\\menubkg.jpg");
+	//长条形的按钮菜单项
+	btn_width = 250;
+	btn_height = 70;
+	normalClr = Color::Red;
+	focusClr = Color::White;
+	t_menu.SetBtnBmp(L".\\res\\button.png", btn_width, btn_height);
+	//设置菜单信息
+	MENU_INFO menuInfo;
+	menuInfo.align = 1;//居中对齐
+	menuInfo.space = MENU_SPACE;//菜单项之间的间隔距离
+	menuInfo.width = btn_width;//菜单项宽高
+	menuInfo.height = btn_height;
+	menuInfo.fontName = L"黑体";
+	menuInfo.isBold = true;
+	menuInfo.normalTextColor = normalClr;
+	menuInfo.focusTextColor = focusClr;
+	t_menu.SetMenuInfo(menuInfo);
+
+	for (int i = 0; i < 3; i++)
+	{
+		//垂直居中布局的坐标
+		x = (wndWidth - btn_width) / 2;
+		y = i*(btn_height + MENU_SPACE) + (wnd_height - 3 * btn_height - 2 * MENU_SPACE) / 2;
+
+		MENUITEM mItem;
+		mItem.pos.x = x;//当前菜单项xy坐标
+		mItem.pos.y = y;
+		mItem.ItemName = menuItems[i];
+		t_menu.AddMenuItem(mItem);
+	}
+}
+
+void EngineTest::DrawMyMenu(HDC hdc)
+{
+
+	if (GameState == GAME_START)
+	{
+		t_menu.DrawMenu(hdc);
+		RectF textRec;
+		textRec.X = 0.00;
+		textRec.Y = 0.00;
+		textRec.Width = (float)wnd_width;
+		textRec.Height = (float)wnd_height / 4;
+		T_Graph::PaintText(hdc, textRec, L"游戏菜单", 36, L"黑体", Color::White, FontStyleBold, StringAlignmentCenter);
+
+	}
+}
+

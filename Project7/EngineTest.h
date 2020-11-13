@@ -34,10 +34,16 @@ public:
 	void GameMouseAction(int x, int y, int Action);//鼠标行为处理
 
 	/*实验七*/
-	void IntMyFish(HDC hdc);//初始化我的鱼
-	void PaintMyFish();//画我的鱼
+	void PrintMyFish(HDC hdc);//画我的鱼
+	void IntMyFish();//初始化我的鱼
 	void LogicMyFish();//逻辑化我的鱼
 	void PaintMyText(HDC hdc);//画我的字
+	void IntMyMenu();//初始化我的菜单
+	void IntMyMenu2();//关于菜单
+	void IntMyMenu3();//帮助菜单
+
+	void DrawMyMenu(HDC hdc);//画我的菜单
+
 
 
 private:
@@ -60,6 +66,8 @@ private:
 	static int NUM;
 	static int FISH_WIDTH;
 	static int FISH_HEIGHT;
+
+	static int MYCHOOSEMENU;//记录我菜单的选择
 
 	vector<FISH> vecFish;
 
